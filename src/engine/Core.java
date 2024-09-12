@@ -15,7 +15,7 @@ import screen.Screen;
 import screen.TitleScreen;
 
 /**
- * Implements core game logic.  안정섭이 팀장입니다. 최락영입니다.
+ * Implements core game logic.
  *
  * 
  * @author <a href="mailto:RobertoIA1987@gmail.com">Roberto Izquierdo Amo</a>
