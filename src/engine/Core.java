@@ -15,7 +15,7 @@ import screen.Screen;
 import screen.TitleScreen;
 
 /**
- * Implements core game logic...
+ * Implements core game logic,,,
  *
  * 
  * @author <a href="mailto:RobertoIA1987@gmail.com">Roberto Izquierdo Amo</a>
