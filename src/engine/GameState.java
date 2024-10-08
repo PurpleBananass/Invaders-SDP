@@ -18,12 +18,16 @@ public class GameState {
 	private int bulletsShot;
 	/** Ships destroyed until now. */
 	private int shipsDestroyed;
+<<<<<<< HEAD
 	/** Elapsed time */
 	private int elapsedTime;
 	/** Special enemy appearances alert message */
 	private String alertMessage;
   /** Ships destroyed consecutive. */
 	private int combo;
+=======
+	/** Number of coins earned in the game */
+>>>>>>> upstream/master
 
 	/**
 	 * Constructor.
