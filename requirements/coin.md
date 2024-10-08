@@ -1,26 +1,55 @@
-# 팀 소개
-우리는 사용자 경험을 더욱 풍부하게 만들기 위해 Space Invader 게임에 화폐 기능을 도입하여 플레이어들이 게임 내에서 전략적 선택을 할 수 있도록 지원하고, 장기적인 게임 참여를 유도하는 것을 목표로 합니다.
-우리의 비전은 플레이어들이 몰입할 수 있는 창의적인 게임 환경을 조성하여 지속 가능한 게임 경제 시스템을 통해 더 큰 재미와 도전을 제공하는 것입니다.
+# COIN
+
+## Team Introduction
+> Our team will develop an in-game currency system and shop, allowing players to upgrade their ships.
+
+저희 팀은 게임 내 화폐시스템 및 상점을 개발해 플레이어의 함선을 업그레이드 할 수 있도록 할 것입니다.
 
 
-#팀 요구사항
-우리는 Space Invader 게임에 화폐 기능을 추가해, 플레이어들이 전략적 선택을 하며 더 오랫동안 게임에 몰입할 수 있도록 하고자 합니다. 
+- Team leader
+    - `Jinbum Shin` : Development & PM
+- Team member
+    - `Dohee Kwon` : Development
+    - `Kyusik Kim` : Development
+    - `Junghyun Choe` : Development
+    - `Seunggo Kim` : Development
+    - `Gibeom Kim` : Development
+    - `Seungmin Jung` : Development
 
-# 상세 요구사항
-화폐 시스템 도입:
-플레이어가 게임을 진행하면서 적을 물리치거나 특정 미션을 완료할 때 화폐를 획득할 수 있는 시스템을 구축합니다. 이 화폐는 게임 내에서 다양한 보상을 구매하거나 업그레이드를 할 수 있는 자원으로 사용됩니다.
+## Team Requirements
+> Implementation of Currency and Shop & In-Shop Upgrades
 
-화폐 획득 메커니즘:
-게임 내에서 플레이어가 적을 처치하거나 특정 목표를 달성할 때, 자동으로 화폐를 획득하도록 메커니즘을 설계해야 합니다. 각각의 적이나 미션에 따라 다른 양의 화폐를 제공하도록 설정합니다.
+화폐 및 상점 & 상점 내 업그레이드 구현
 
-화폐 사용 기능:
-플레이어가 모은 화폐를 사용하여 다양한 아이템이나 업그레이드를 구매할 수 있도록 상점이나 업그레이드 시스템을 추가합니다. 여기에는 무기, 방어력, 캐릭터 강화 등이 포함될 수 있습니다.
+## Detailed Requirements
+> The implementation involves creating a Wallet object in the core class to manage coins and upgrade statuses. For teams that need coin deposit/withdrawal/inquiry functions, you can use the Wallet to handle deposits, withdrawals, and inquiries.
+>
+구현은 core클래스에 Wallet객체를 생성해 코인 및 업그레이드 상태 등을 관리합니다.
+코인 입금/출금/조회 기능이 필요한 다른 팀의 경우, Wallet을 이용해 입출금 및 조회를 진행하시면 될 것 같습니다.
 
-화폐 UI 디자인:
-플레이어가 현재 보유한 화폐를 쉽게 확인할 수 있도록 화면에 직관적인 화폐 잔액 표시 기능을 추가해야 합니다.
+> Coins will be awarded in proportion to the game score (10% of the score), and the required coins for upgrades will increase in a pattern like 1000-2000-4000.
 
-데이터 저장:
-플레이어의 화폐 상태와 사용 내역이 저장되고, 게임을 종료한 후에도 유지될 수 있도록 데이터베이스 또는 로컬 저장소와 연동하는 시스템을 설계합니다.
+코인은 게임 점수에 비례해 지급할 예정이며(점수10%), 1000-2000-4000 이런식으로 업그레이드 당 필요 코인이 증가하는 식으로 벨류를 잡았습니다.
 
-밸런스 조정:
-화폐 시스템이 게임의 밸런스를 깨뜨리지 않도록, 적절한 획득량과 소비량을 조정하는 과정이 필요합니다. 플레이어가 과도하게 화폐를 모으거나 너무 적게 얻지 않도록 주의해야 합니다.
+> Regarding the application of shop upgrades, our team plans to adjust values like speed when creating the ship in the GameScreen.initialize() section during development.
+
+상점 업그레이드 적용과 관련해 저희 팀에서 GameScreen.initialize()부분에서 ship생성 시 속도 등의 수치를 조정하며 개발할 것 같습니다.
+
+### Shop-list
+> We plan to offer the following upgrades in the shop:
+> - Increased bullet speed
+> - Increased firing rate
+> - Extra life
+> - Increased coin acquisition
+
+상점에서 다음과 같은 업그레이드를 제공할 예정입니다.
+- 총알 속도 증가
+- 발사 빈도 증가
+- 추가 라이프
+- 획득 코인 증가
+
+
+## Dependency
+> Sound Effects: A sound effect will be played when coins are used in the shop.
+
+사운드 효과: 상점 내 코인 사용시 효과음 재생
