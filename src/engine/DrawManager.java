@@ -738,12 +738,12 @@ public final class DrawManager {
 
 
 		backBufferGraphics.setFont(fontRegular);
-		backBufferGraphics.setColor(Color.WHITE);
+		backBufferGraphics.setColor(Color.LIGHT_GRAY);
 		FontMetrics metrics = backBufferGraphics.getFontMetrics(fontRegular);
-		String highScoreDisplay = "RECORD: " + highestPlayer + " - " + highestScore;
-		int x = (backBuffer.getWidth() - metrics.stringWidth(highScoreDisplay)) / 2;
+		String highScoreDisplay = highestPlayer + " " + highestScore;
 
-		backBufferGraphics.drawString(highScoreDisplay, screen.getWidth()-420, 85);
+		backBufferGraphics.drawString(highScoreDisplay,
+				screen.getWidth() - metrics.stringWidth(highScoreDisplay) - 76, 25);
 	}
   /**
 	 * Draws ReloadTimer on screen.

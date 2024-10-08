@@ -8,21 +8,8 @@ import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 
-<<<<<<< HEAD
 import engine.*;
-import entity.Bullet;
-import entity.BulletPool;
-import entity.EnemyShip;
-import entity.EnemyShipFormation;
-import entity.Entity;
-import entity.Ship;
-=======
-import engine.Cooldown;
-import engine.Core;
-import engine.GameSettings;
-import engine.GameState;
 import entity.*;
->>>>>>> upstream/master
 
 /**
  * Implements the game screen, where the action happens.
@@ -82,21 +69,18 @@ public class GameScreen extends Screen {
 	private boolean levelFinished;
 	/** Checks if a bonus life is received. */
 	private boolean bonusLife;
-<<<<<<< HEAD
 	/** list of highScores for find recode. */
 	private List<Score>highScores;
 	/** Elapsed time while playing this game. */
 	private int elapsedTime;
 	/** Alert Message when a special enemy appears. */
 	private String alertMessage;
-  /** checks if it's executed. */
-  private boolean isExecuted = false;
+	/** checks if it's executed. */
+  	private boolean isExecuted = false;
 	/** timer.. */
 	private Timer timer;
 	private TimerTask timerTask;
-=======
 	private Wallet wallet;
->>>>>>> upstream/master
 
 	/**
 	 * Constructor, establishes the properties of the screen.
@@ -130,7 +114,6 @@ public class GameScreen extends Screen {
 			this.lives++;
 		this.bulletsShot = gameState.getBulletsShot();
 		this.shipsDestroyed = gameState.getShipsDestroyed();
-<<<<<<< HEAD
 
 		try {
 			this.highScores = Core.getFileManager().loadHighScores();
@@ -138,9 +121,7 @@ public class GameScreen extends Screen {
 		} catch (IOException e) {
 			logger.warning("Couldn't load high scores!");
 		}
-=======
 		this.wallet = wallet;
->>>>>>> upstream/master
 
 	}
 

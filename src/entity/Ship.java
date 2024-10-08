@@ -115,7 +115,6 @@ public class Ship extends Entity {
 		return SPEED;
 	}
 
-<<<<<<< HEAD
 	public long getRemainingReloadTime(){
 		long currentTime = System.currentTimeMillis();
 		long elapsedTime = currentTime - this.lastShootTime;
@@ -124,7 +123,6 @@ public class Ship extends Entity {
 	}
 
 
-=======
 	public void applyItem(Wallet wallet){
 		int bulletLv = wallet.getBullet_lv();
 		switch (bulletLv){
@@ -165,5 +163,4 @@ public class Ship extends Entity {
 				shootingCooldown = Core.getCooldown(SHOOTING_INTERVAL);
 		}
 	}
->>>>>>> upstream/master
 }
