@@ -311,11 +311,11 @@ public final class DrawManager {
 		backBufferGraphics.setFont(fontRegular);
 		backBufferGraphics.setColor(Color.LIGHT_GRAY);
 
-		int fps = 60;
-		int cent = (100*(elapsedTime % fps))/60;
+		int fps = 1000;
+		int cent = (elapsedTime % fps)/10;
 		int seconds = elapsedTime / fps;
-		int sec = seconds % fps;
-		int min = seconds / fps;
+		int sec = seconds % 60;
+		int min = seconds / 60;
 
         String elapsedTimeString;
         if (min < 1){
@@ -338,7 +338,8 @@ public final class DrawManager {
 	public void drawAlertMessage(final Screen screen, final String alertMessage) {
 		backBufferGraphics.setFont(fontRegular);
 		backBufferGraphics.setColor(Color.RED);
-		backBufferGraphics.drawString(alertMessage, (screen.getWidth()-92)/2, 65);
+		backBufferGraphics.drawString(alertMessage,
+				(screen.getWidth() - fontRegularMetrics.stringWidth(alertMessage))/2, 65);
 	}
 
 	/**
@@ -1077,11 +1078,11 @@ public final class DrawManager {
 			int shipX = ship.getPositionX();
 			int shipY = ship.getPositionY();
 			int shipWidth = ship.getWidth();
-			int textWidth = backBufferGraphics.getFontMetrics().stringWidth(timerText);
-			int x = shipX + shipWidth/2 - textWidth/2;
-			int y = shipY - 10;
-
-			backBufferGraphics.drawString(timerText,x,y);
+			int circleSize = 16;
+			int startAngle = 0;
+			int endAngle = startAngle - (360 * (int)remainingTime / 600);
+			backBufferGraphics.fillArc(shipX + shipWidth/2 - circleSize/2, shipY - 3*circleSize/2,
+					circleSize, circleSize, startAngle, endAngle);
 		}
 	}
   

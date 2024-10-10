@@ -47,6 +47,8 @@ public class GameState {
 	 *            Ships destroyed until now.
 	 * @param elapsedTime
 	 * 			  Elapsed time.
+	 * @param alertMessage
+	 *  		  Display alert message before a bonus enemy created.
 	 * @param combo
 	 *            Ships destroyed consequtive.
 	 */

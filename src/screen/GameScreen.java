@@ -81,6 +81,8 @@ public class GameScreen extends Screen {
 	private List<Score>highScores;
 	/** Elapsed time while playing this game. */
 	private int elapsedTime;
+	/** Keep previous timestamp. */
+	private Integer prevTime;
 	/** Alert Message when a special enemy appears. */
 	private String alertMessage;
 	/** checks if it's executed. */
@@ -93,7 +95,6 @@ public class GameScreen extends Screen {
 	/** Singleton instance of SoundManager */
 	private final SoundManager soundManager = SoundManager.getInstance();
 
-	private int playTime;
 
 
 	/**
@@ -192,7 +193,10 @@ public class GameScreen extends Screen {
 		if (this.inputDelay.checkFinished() && !this.levelFinished) {
 
 			/*Elapsed Time Update*/
-			this.elapsedTime++;
+			long currentTime = System.currentTimeMillis();
+			if (this.prevTime != null)
+				this.elapsedTime += (int) (currentTime - this.prevTime);
+			this.prevTime = (int) currentTime;
 
 			if (!this.ship.isDestroyed()) {
 				boolean moveRight = inputManager.isKeyDown(KeyEvent.VK_RIGHT)
@@ -232,15 +236,20 @@ public class GameScreen extends Screen {
 			}
 			if(this.enemyShipSpecial == null
 					&& this.enemyShipSpecialCooldown.checkAlert()) {
-				if (this.enemyShipSpecialCooldown.checkAlertAnimation() == 3){
-					this.alertMessage = "!!! ALERT !!!";
-				}else if (this.enemyShipSpecialCooldown.checkAlertAnimation() == 2){
-					this.alertMessage = "-!! ALERT !!-";
-				} else if (this.enemyShipSpecialCooldown.checkAlertAnimation() == 1){
-					this.alertMessage = "--! ALERT !--";
-				} else {
-					this.alertMessage = "";
+				switch (this.enemyShipSpecialCooldown.checkAlertAnimation()){
+					case 1: this.alertMessage = "--! ALERT !--";
+						break;
+
+					case 2: this.alertMessage = "-!! ALERT !!-";
+						break;
+
+					case 3: this.alertMessage = "!!! ALERT !!!";
+						break;
+
+					default: this.alertMessage = "";
+						break;
 				}
+
 			}
 			if (this.enemyShipSpecial != null
 					&& this.enemyShipSpecial.getPositionX() > this.width) {
