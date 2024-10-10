@@ -9,13 +9,10 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 
+
+
+
 import engine.*;
-
-import engine.Cooldown;
-import engine.Core;
-import engine.GameSettings;
-import engine.GameState;
-
 import entity.*;
 
 /**
@@ -61,7 +58,11 @@ public class GameScreen extends Screen {
 	/** Set of all bullets fired by on screen ships. */
 	private Set<Bullet> bullets;
 	/** Current score. */
+	private String name1;
+
 	private int score;
+	/** Current ship type. */
+	private Ship.ShipType shipType;
 	/** Player lives left. */
 	private int lives;
 	/** Total bullets shot by the player. */
@@ -89,6 +90,10 @@ public class GameScreen extends Screen {
 	private TimerTask timerTask;
 
 	private Wallet wallet;
+	/** Singleton instance of SoundManager */
+	private final SoundManager soundManager = SoundManager.getInstance();
+
+	private int playTime;
 
 
 	/**
@@ -118,6 +123,7 @@ public class GameScreen extends Screen {
 		this.score = gameState.getScore();
 		this.elapsedTime = gameState.getElapsedTime();
 		this.alertMessage = gameState.getAlertMessage();
+		this.shipType = gameState.getShipType();
 		this.lives = gameState.getLivesRemaining();
 		if (this.bonusLife)
 			this.lives++;
@@ -145,9 +151,9 @@ public class GameScreen extends Screen {
 
 		enemyShipFormation = new EnemyShipFormation(this.gameSettings);
 		enemyShipFormation.attach(this);
-		this.ship = new Ship(this.width / 2, this.height - 30);
-		ship.applyItem(wallet);
-		// Appears each 10-30 seconds.
+		this.ship = ShipFactory.create(this.shipType, this.width / 2, this.height - 70);
+        ship.applyItem(wallet);
+        // Appears each 10-30 seconds.
 		this.enemyShipSpecialCooldown = Core.getVariableCooldown(
 				BONUS_SHIP_INTERVAL, BONUS_SHIP_VARIANCE);
 		this.enemyShipSpecialCooldown.reset();
@@ -160,6 +166,7 @@ public class GameScreen extends Screen {
 		this.gameStartTime = System.currentTimeMillis();
 		this.inputDelay = Core.getCooldown(INPUT_DELAY);
 		this.inputDelay.reset();
+		soundManager.playSound(Sound.COUNTDOWN);
 	}
 
 	/**
@@ -258,7 +265,6 @@ public class GameScreen extends Screen {
 
 		if (this.levelFinished && this.screenFinishedCooldown.checkFinished())
 			this.isRunning = false;
-
 	}
 
 	/**
@@ -286,7 +292,7 @@ public class GameScreen extends Screen {
 		drawManager.drawScore(this, this.score);
 		drawManager.drawElapsedTime(this, this.elapsedTime);
 		drawManager.drawAlertMessage(this, this.alertMessage);
-		drawManager.drawLives(this, this.lives);
+		drawManager.drawLives(this, this.lives, this.shipType);
 		drawManager.drawLevel(this, this.level);
 		drawManager.drawHorizontalLine(this, SEPARATION_LINE_HEIGHT - 1);
 		drawManager.drawReloadTimer(this,this.ship,ship.getRemainingReloadTime());
@@ -419,7 +425,7 @@ public class GameScreen extends Screen {
 	 * @return Current game state.
 	 */
 	public final GameState getGameState() {
-		return new GameState(this.level, this.score, this.lives,
+		return new GameState(this.level, this.score, this.shipType, this.lives,
 				this.bulletsShot, this.shipsDestroyed, this.elapsedTime, this.alertMessage, 0);
 	}
 }

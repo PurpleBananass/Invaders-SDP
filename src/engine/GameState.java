@@ -1,5 +1,7 @@
 package engine;
 
+import entity.Ship;
+
 /**
  * Implements an object that stores the state of the game between levels.
  * 
@@ -8,10 +10,13 @@ package engine;
  */
 public class GameState {
 
+	private GameState instance;
 	/** Current game level. */
 	private int level;
 	/** Current score. */
 	private int score;
+	/** Current ship type. */
+	private Ship.ShipType shipType;
 	/** Lives currently remaining. */
 	private int livesRemaining;
 	/** Bullets shot until now. */
@@ -24,7 +29,6 @@ public class GameState {
 	private String alertMessage;
     /** Ships destroyed consecutive. */
 	private int combo;
-	/** Number of coins earned in the game */
 
 	/**
 	 * Constructor.
@@ -33,6 +37,8 @@ public class GameState {
 	 *            Current game level.
 	 * @param score
 	 *            Current score.
+	 * @param shipType
+	 * 		  	  Current ship type.
 	 * @param livesRemaining
 	 *            Lives currently remaining.
 	 * @param bulletsShot
@@ -45,11 +51,13 @@ public class GameState {
 	 *            Ships destroyed consequtive.
 	 */
 	public GameState(final int level, final int score,
+			final Ship.ShipType shipType,
 			final int livesRemaining, final int bulletsShot,
 			final int shipsDestroyed, final int elapsedTime, final String alertMessage, final int combo) {
 				
 		this.level = level;
 		this.score = score;
+		this.shipType = shipType;
 		this.livesRemaining = livesRemaining;
 		this.bulletsShot = bulletsShot;
 		this.shipsDestroyed = shipsDestroyed;
@@ -73,6 +81,13 @@ public class GameState {
 	}
 
 	/**
+	 * @return the shipType
+	 */
+	public final Ship.ShipType getShipType() {
+		return shipType;
+	}
+
+	/**
 	 * @return the livesRemaining
 	 */
 	public final int getLivesRemaining() {
@@ -93,6 +108,7 @@ public class GameState {
 		return shipsDestroyed;
 	}
 
+
 	/**
 	 * @return the elapsedTime
 	 */
@@ -103,4 +119,12 @@ public class GameState {
 	 */
 	public final String getAlertMessage() { return alertMessage; }
 
+	public double getAccuracy() {
+		if (bulletsShot == 0){
+			return 0;
+		}
+		return ((double) shipsDestroyed / bulletsShot) *100;
+	}
+
 }
+
