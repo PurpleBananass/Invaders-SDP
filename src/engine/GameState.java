@@ -22,7 +22,7 @@ public class GameState {
 	private int elapsedTime;
 	/** Special enemy appearances alert message */
 	private String alertMessage;
-  /** Ships destroyed consecutive. */
+    /** Ships destroyed consecutive. */
 	private int combo;
 	/** Number of coins earned in the game */
 
