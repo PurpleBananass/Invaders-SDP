@@ -77,10 +77,10 @@ public class ScoreScreen extends Screen {
 		// Adjust coin earning ratios based on the game level upgrade stage score
 		// Since coins are in integer units, round the decimal points and convert to int
 		this.coinsEarned = (int)Math.round(gameState.getScore() * coin_ratio);
+		this.coinsEarned += achievementManager.getAchievementReward();
 
 		// deposit the earned coins to wallet
 		this.accuracy = gameState.getAccuracy();
-		this.coinsEarned = gameState.getScore()/10 + achievementManager.getAchievementReward();
 		wallet.deposit(coinsEarned);
 
 		try {

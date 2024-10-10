@@ -616,9 +616,9 @@ public final class DrawManager {
 				- fontRegularMetrics.getHeight() - 15);
 
 		// draw accuracy reward
-		final String[] ACCURACY_COIN_REWARD = {"500", "1000", "1500", "2000"};
+		final String[] ACCURACY_COIN_REWARD = {"500", "1500", "2000", "2500"};
 
-		// draw accuracy achievement
+		// draw accuracy achievementad
 		if (accuracy >= 100) {
 			backBufferGraphics.setColor(Color.gray);
 			drawRightSideAchievementCoinBigString(screen, ACCURACY_COIN_REWARD[3],
