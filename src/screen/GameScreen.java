@@ -8,22 +8,14 @@ import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 
-<<<<<<< HEAD
-import engine.*;
-=======
 
 import engine.*;
-import entity.Bullet;
-import entity.BulletPool;
-import entity.EnemyShip;
-import entity.EnemyShipFormation;
-import entity.Entity;
-import entity.Ship;
+
 import engine.Cooldown;
 import engine.Core;
 import engine.GameSettings;
 import engine.GameState;
->>>>>>> e44b2bf (수정사항 반영)
+
 import entity.*;
 
 /**
@@ -95,13 +87,9 @@ public class GameScreen extends Screen {
 	/** timer.. */
 	private Timer timer;
 	private TimerTask timerTask;
-<<<<<<< HEAD
-	private Wallet wallet;
-=======
 
 	private Wallet wallet;
 
->>>>>>> e44b2bf (수정사항 반영)
 
 	/**
 	 * Constructor, establishes the properties of the screen.
@@ -135,10 +123,7 @@ public class GameScreen extends Screen {
 			this.lives++;
 		this.bulletsShot = gameState.getBulletsShot();
 		this.shipsDestroyed = gameState.getShipsDestroyed();
-<<<<<<< HEAD
-=======
 
->>>>>>> e44b2bf (수정사항 반영)
 
 		try {
 			this.highScores = Core.getFileManager().loadHighScores();
@@ -146,13 +131,9 @@ public class GameScreen extends Screen {
 		} catch (IOException e) {
 			logger.warning("Couldn't load high scores!");
 		}
-<<<<<<< HEAD
-		this.wallet = wallet;
-=======
 
 		this.wallet = wallet;
 
->>>>>>> e44b2bf (수정사항 반영)
 
 	}
 
@@ -320,7 +301,7 @@ public class GameScreen extends Screen {
 			drawManager.drawHorizontalLine(this, this.height / 2 + this.height / 12);
 		}
 
-		//add drawRecode method for drawing
+		//add drawRecord method for drawing
 		drawManager.drawRecord(highScores,this);
 
 		drawManager.completeDrawing(this);

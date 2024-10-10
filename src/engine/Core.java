@@ -123,14 +123,8 @@ public final class Core {
 
 		int returnCode = 1;
 		do {
-<<<<<<< HEAD
 			MAX_LIVES = wallet.getLives_lv()+2;
 			gameState = new GameState(1, 0, MAX_LIVES, 0, 0, 0, "", 0);
-=======
-
-			gameState = new GameState(1, 0, MAX_LIVES, 0, 0, 0, "", 0);
-			MAX_LIVES = wallet.getLives_lv()+2;
->>>>>>> e44b2bf (수정사항 반영)
 
 			switch (returnCode) {
 			case 1:

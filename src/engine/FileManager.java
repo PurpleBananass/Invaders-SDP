@@ -124,7 +124,7 @@ public final class FileManager {
 			 * 2. font파일이 없어서 github에 있는 폰트 다운 및 res파일에 넣고 경로 설정 해줌
 			 */
 			inputStream = FileManager.class.getClassLoader()
-					.getResourceAsStream("font.ttf");
+					.getResourceAsStream("space_invaders.ttf");
 			font = Font.createFont(Font.TRUETYPE_FONT, inputStream).deriveFont(
 					size);
 		} finally {
