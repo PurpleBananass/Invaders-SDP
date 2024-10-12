@@ -54,6 +54,7 @@ public class SoundManager {
             loadSound(Sound.COIN_USE, "res/sound/SFX/coinUse.wav");
             loadSound(Sound.GAME_END, "res/sound/SFX/gameEnd.wav");
             loadSound(Sound.UFO_APPEAR, "res/sound/SFX/ufoAppear.wav");
+            loadSound(Sound.BULLET_BLOCKING, "res/sound/SFX/bulletBlocking.wav");
             loadSound(Sound.ITEM_2SHOT, "res/sound/SFX/item_2shot.wav");
             loadSound(Sound.ITEM_3SHOT, "res/sound/SFX/item_3shot.wav");
             loadSound(Sound.ITEM_BARRIER_ON, "res/sound/SFX/item_barrierOn.wav");

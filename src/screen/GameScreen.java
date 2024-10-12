@@ -642,6 +642,7 @@ public class GameScreen extends Screen {
 				for (Block block : this.block) {
 					if (checkCollision(bullet, block)) {
 						recyclable.add(bullet);
+                        soundManager.playSound(Sound.BULLET_BLOCKING);
 						break;
 					}
 				}
