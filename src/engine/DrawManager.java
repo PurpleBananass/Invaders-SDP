@@ -423,8 +423,8 @@ public final class DrawManager {
 
 	public void drawLaunchTrajectory(final Screen screen, final int positionX) {
 		backBufferGraphics.setColor(Color.DARK_GRAY);
-		for (int i = 0; i < screen.getHeight() - 60; i += 20){
-			backBufferGraphics.drawRect(positionX + 13, screen.getHeight() - 30 - i,1,10);
+		for (int i = 0; i < screen.getHeight() - 140; i += 20){
+			backBufferGraphics.drawRect(positionX + 13, screen.getHeight() - 100 - i,1,10);
 
 		}
 
@@ -1125,14 +1125,30 @@ public final class DrawManager {
 		backBufferGraphics.setFont(fontRegular);
 		backBufferGraphics.setColor(Color.WHITE);
 		if(remainingTime > 0){
-			String timerText = String.format("%d",remainingTime/200);
 
 			int shipX = ship.getPositionX();
 			int shipY = ship.getPositionY();
 			int shipWidth = ship.getWidth();
 			int circleSize = 16;
-			int startAngle = 0;
-			int endAngle = startAngle - (360 * (int)remainingTime / 600);
+			int startAngle = 90;
+			int endAngle = 0;
+			switch(Core.BASE_SHIP){
+				case Ship.ShipType.VoidReaper:
+					endAngle = 360 * (int)remainingTime / (int)(750 * 0.4);
+				    break;
+				case Ship.ShipType.CosmicCruiser:
+					endAngle = 360 * (int)remainingTime / (int)(750 * 1.6);
+				    break;
+				case Ship.ShipType.StarDefender:
+					endAngle = 360 * (int)remainingTime / (int)(750 * 1.0);
+					break;
+				case Ship.ShipType.GalacticGuardian:
+					endAngle = 360 * (int)remainingTime / (int)(750 * 1.2);
+					break;
+
+
+			}
+
 			backBufferGraphics.fillArc(shipX + shipWidth/2 - circleSize/2, shipY - 3*circleSize/2,
 					circleSize, circleSize, startAngle, endAngle);
 		}
