@@ -652,7 +652,7 @@ public class GameScreen extends Screen {
 					recyclable.add(bullet);
 				}
 
-				if (bullet.getPositionY() < topEnemyY) {
+				if (this.itemManager.getShotNum() == 1 && bullet.getPositionY() < topEnemyY) {
 					this.combo = 0;
 					isExecuted = true;
 				}
