@@ -24,7 +24,7 @@ public class GameState {
 	private int elapsedTime;
 	/** Special enemy appearances alert message */
 	private String alertMessage;
-    /** Ships destroyed consecutive. */
+    /** Number of consecutive hits */
 	private int combo;
 	/** Intermediate aggregation variables
 	 * max combo, elapsed time and total score
