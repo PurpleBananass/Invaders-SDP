@@ -16,6 +16,7 @@ import java.util.TimerTask;
 import engine.*;
 import entity.*;
 
+
 /**
  * Implements the game screen, where the action happens.
  * 
@@ -576,6 +577,16 @@ public class GameScreen extends Screen {
 			timer.schedule(timerTask, 3000);
 		}
 
+		int topEnemyY = Integer.MAX_VALUE;
+		for (EnemyShip enemyShip : this.enemyShipFormation) {
+			if (enemyShip != null && !enemyShip.isDestroyed() && enemyShip.getPositionY() < topEnemyY) {
+				topEnemyY = enemyShip.getPositionY();
+			}
+		}
+		if (this.enemyShipSpecial != null && !this.enemyShipSpecial.isDestroyed() && this.enemyShipSpecial.getPositionY() < topEnemyY) {
+			topEnemyY = this.enemyShipSpecial.getPositionY();
+		}
+
 		for (Bullet bullet : this.bullets) {
 
 			// Enemy ship's bullets
@@ -612,10 +623,7 @@ public class GameScreen extends Screen {
 						this.enemyShipFormation.HealthManageDestroy(enemyShip);
 						// If the enemy doesn't die, the combo increases;
 						// if the enemy dies, both the combo and score increase.
-						if (combo >= 5)
-							this.score += this.enemyShipFormation.getPoint() * (combo / 5 + 1);
-						else
-							this.score += this.enemyShipFormation.getPoint();
+						this.score += Score.comboScore(this.enemyShipFormation.getPoint(), this.combo);
 						this.shipsDestroyed += this.enemyShipFormation.getDistroyedship();
 						this.combo++;
 						if (this.combo > this.maxCombo) this.maxCombo = this.combo;
@@ -632,10 +640,7 @@ public class GameScreen extends Screen {
 				if (this.enemyShipSpecial != null
 						&& !this.enemyShipSpecial.isDestroyed()
 						&& checkCollision(bullet, this.enemyShipSpecial)) {
-					if (combo >= 5)
-						this.score += enemyShipSpecial.getPointValue() * (combo / 5 + 1);
-					else
-						this.score += enemyShipSpecial.getPointValue();
+					this.score += Score.comboScore(this.enemyShipSpecial.getPointValue(), this.combo);
 					this.shipsDestroyed++;
 					this.combo++;
 					if (this.combo > this.maxCombo) this.maxCombo = this.combo;
@@ -645,6 +650,11 @@ public class GameScreen extends Screen {
 					isExecuted = false;
 
 					recyclable.add(bullet);
+				}
+
+				if (bullet.getPositionY() < topEnemyY) {
+					this.combo = 0;
+					isExecuted = true;
 				}
 
 				Iterator<ItemBox> itemBoxIterator = this.itemBoxes.iterator();
