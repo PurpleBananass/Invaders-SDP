@@ -73,7 +73,7 @@ public class GameScreen extends Screen {
 	private int bulletsShot;
 	/** Total ships destroyed by the player. */
 	private int shipsDestroyed;
-	/** Total ships destroyed consecutive by the player.
+	/** Number of consecutive hits.
 	 * maxCombo records the maximum value of combos in that level. */
 	private int combo;
 	private int maxCombo;
@@ -245,6 +245,8 @@ public class GameScreen extends Screen {
 		this.gameStartTime = System.currentTimeMillis();
 		this.inputDelay = Core.getCooldown(INPUT_DELAY);
 		this.inputDelay.reset();
+		if (soundManager.isSoundPlaying(Sound.BGM_MAIN))
+			soundManager.stopSound(Sound.BGM_MAIN);
 		soundManager.playSound(Sound.COUNTDOWN);
 
 		switch (this.level) {

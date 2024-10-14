@@ -9,6 +9,7 @@ import entity.Ship;
  * 
  */
 public class GameState {
+	/** Current game level. */
 	private int level;
 	/** Current score. */
 	private int score;
