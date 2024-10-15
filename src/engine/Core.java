@@ -1,18 +1,15 @@
 package engine;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.io.IOException;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.FileHandler;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import screen.GameScreen;
-import screen.HighScoreScreen;
-import screen.ScoreScreen;
-import screen.Screen;
-import screen.TitleScreen;
+import entity.Ship;
+import entity.Wallet;
+import screen.*;
 
 /**
  * Implements core game logic.
@@ -23,47 +20,22 @@ import screen.TitleScreen;
 public final class Core {
 
 	/** Width of current screen. */
-	private static final int WIDTH = 448;
+	private static final int WIDTH = 600;
 	/** Height of current screen. */
-	private static final int HEIGHT = 520;
+	private static final int HEIGHT = 650;
 	/** Max fps of current screen. */
 	private static final int FPS = 60;
 
+	/** Base ship type. */
+	public static Ship.ShipType BASE_SHIP = Ship.ShipType.StarDefender;
 	/** Max lives. */
-	private static final int MAX_LIVES = 3;
+	public static int MAX_LIVES;
 	/** Levels between extra life. */
-	private static final int EXTRA_LIFE_FRECUENCY = 3;
-	/** Total number of levels. */
-	private static final int NUM_LEVELS = 7;
-	
-	/** Difficulty settings for level 1. */
-	private static final GameSettings SETTINGS_LEVEL_1 =
-			new GameSettings(5, 4, 60, 2000);
-	/** Difficulty settings for level 2. */
-	private static final GameSettings SETTINGS_LEVEL_2 =
-			new GameSettings(5, 5, 50, 2500);
-	/** Difficulty settings for level 3. */
-	private static final GameSettings SETTINGS_LEVEL_3 =
-			new GameSettings(6, 5, 40, 1500);
-	/** Difficulty settings for level 4. */
-	private static final GameSettings SETTINGS_LEVEL_4 =
-			new GameSettings(6, 6, 30, 1500);
-	/** Difficulty settings for level 5. */
-	private static final GameSettings SETTINGS_LEVEL_5 =
-			new GameSettings(7, 6, 20, 1000);
-	/** Difficulty settings for level 6. */
-	private static final GameSettings SETTINGS_LEVEL_6 =
-			new GameSettings(7, 7, 10, 1000);
-	/** Difficulty settings for level 7. */
-	private static final GameSettings SETTINGS_LEVEL_7 =
-			new GameSettings(8, 7, 2, 500);
-	
+	public static final int EXTRA_LIFE_FRECUENCY = 3;
 	/** Frame to draw the screen on. */
 	private static Frame frame;
 	/** Screen currently shown. */
 	private static Screen currentScreen;
-	/** Difficulty settings list. */
-	private static List<GameSettings> gameSettings;
 	/** Application logger. */
 	private static final Logger LOGGER = Logger.getLogger(Core.class
 			.getSimpleName());
@@ -71,6 +43,12 @@ public final class Core {
 	private static Handler fileHandler;
 	/** Logger handler for printing to console. */
 	private static ConsoleHandler consoleHandler;
+	/** Initialize singleton instance of SoundManager and return that */
+	private static final SoundManager soundManager = SoundManager.getInstance();
+
+	private static long startTime, endTime;
+
+	private static int DifficultySetting;// <- setting EASY(0), NORMAL(1), HARD(2);
 
 
 	/**
@@ -79,7 +57,7 @@ public final class Core {
 	 * @param args
 	 *            Program args, ignored.
 	 */
-	public static void main(final String[] args) {
+	public static void main(final String[] args) throws IOException {
 		try {
 			LOGGER.setUseParentHandlers(false);
 
@@ -103,25 +81,23 @@ public final class Core {
 		int width = frame.getWidth();
 		int height = frame.getHeight();
 
-		gameSettings = new ArrayList<GameSettings>();
-		gameSettings.add(SETTINGS_LEVEL_1);
-		gameSettings.add(SETTINGS_LEVEL_2);
-		gameSettings.add(SETTINGS_LEVEL_3);
-		gameSettings.add(SETTINGS_LEVEL_4);
-		gameSettings.add(SETTINGS_LEVEL_5);
-		gameSettings.add(SETTINGS_LEVEL_6);
-		gameSettings.add(SETTINGS_LEVEL_7);
-		
 		GameState gameState;
+
+		AchievementManager achievementManager;
+		Wallet wallet = Wallet.getWallet();
 
 		int returnCode = 1;
 		do {
-			gameState = new GameState(1, 0, MAX_LIVES, 0, 0);
+			MAX_LIVES = wallet.getLives_lv()+2;
+			gameState = new GameState(1, 0, BASE_SHIP, MAX_LIVES, 0, 0, 0, "", 0, 0, 0 ,0);
+			achievementManager = new AchievementManager();
+
+			GameSettings gameSetting = new GameSettings(4, 4, 60, 2500);
 
 			switch (returnCode) {
 			case 1:
 				// Main menu.
-				currentScreen = new TitleScreen(width, height, FPS);
+				currentScreen = new TitleScreen(width, height, FPS, wallet);
 				LOGGER.info("Starting " + WIDTH + "x" + HEIGHT
 						+ " title screen at " + FPS + " fps.");
 				returnCode = frame.setScreen(currentScreen);
@@ -131,28 +107,108 @@ public final class Core {
 				// Game & score.
 				do {
 					// One extra live every few levels.
+					startTime = System.currentTimeMillis();
 					boolean bonusLife = gameState.getLevel()
 							% EXTRA_LIFE_FRECUENCY == 0
 							&& gameState.getLivesRemaining() < MAX_LIVES;
-					
+					LOGGER.info("difficulty is " + DifficultySetting);
+					//add variation
+					gameSetting = gameSetting.LevelSettings(gameSetting.getFormationWidth(),
+							gameSetting.getFormationHeight(),
+							gameSetting.getBaseSpeed(),
+							gameSetting.getShootingFrecuency(),
+							gameState.getLevel(), DifficultySetting);
+
 					currentScreen = new GameScreen(gameState,
-							gameSettings.get(gameState.getLevel() - 1),
-							bonusLife, width, height, FPS);
+							gameSetting,
+							bonusLife, width, height, FPS, wallet);
 					LOGGER.info("Starting " + WIDTH + "x" + HEIGHT
+
 							+ " game screen at " + FPS + " fps.");
 					frame.setScreen(currentScreen);
 					LOGGER.info("Closing game screen.");
 
 					gameState = ((GameScreen) currentScreen).getGameState();
 
-					gameState = new GameState(gameState.getLevel() + 1,
-							gameState.getScore(),
-							gameState.getLivesRemaining(),
-							gameState.getBulletsShot(),
-							gameState.getShipsDestroyed());
+					gameState = new GameState(gameState, gameState.getLevel() + 1);
+					endTime = System.currentTimeMillis();
+					achievementManager.updatePlaying((int) (endTime - startTime) / 1000, MAX_LIVES, gameState.getLivesRemaining(), gameState.getLevel()-1);
+				} while (gameState.getLivesRemaining() > 0);
+				achievementManager.updatePlayed(gameState.getAccuracy(), gameState.getScore(), GameSettingScreen.getMultiPlay());
+                achievementManager.updateAllAchievements();
+				LOGGER.info("Starting " + WIDTH + "x" + HEIGHT
+						+ " score screen at " + FPS + " fps, with a score of "
+						+ gameState.getScore() + ", "
+						+ gameState.getShipType().toString() + " ship, "
+						+ gameState.getLivesRemaining() + " lives remaining, "
+						+ gameState.getBulletsShot() + " bullets shot and "
+						+ gameState.getShipsDestroyed() + " ships destroyed.");
+				currentScreen = new ScoreScreen(GameSettingScreen.getName(0), width, height, FPS, gameState, wallet, achievementManager, false);
 
-				} while (gameState.getLivesRemaining() > 0
-						&& gameState.getLevel() <= NUM_LEVELS);
+				returnCode = frame.setScreen(currentScreen);
+				LOGGER.info("Closing score screen.");
+				break;
+
+			case 3:
+				//Shop
+				currentScreen = new ShopScreen(width, height, FPS, wallet);
+				LOGGER.info("Starting " + WIDTH + "x" + HEIGHT
+						+ " Shop screen at " + FPS + " fps.");
+				returnCode = frame.setScreen(currentScreen);
+				LOGGER.info("Closing Shop screen.");
+				break;
+
+			case 4:
+				// Achievement
+				currentScreen = new AchievementScreen(width, height, FPS,achievementManager);
+				LOGGER.info("Starting " + WIDTH + "x" + HEIGHT
+						+ " achievement screen at " + FPS + " fps.");
+				returnCode = frame.setScreen(currentScreen);
+				LOGGER.info("Closing Achievement screen.");
+				break;
+
+			case 5:
+				//Setting
+				currentScreen = new SettingScreen(width, height, FPS);
+				LOGGER.info("Starting " + WIDTH + "x" + HEIGHT
+						+ " setting screen at " + FPS + " fps.");
+				returnCode = frame.setScreen(currentScreen);
+				LOGGER.info("Closing Setting screen.");
+				break;
+
+			case 6:
+				//Game Setting
+				currentScreen = new GameSettingScreen(width, height, FPS);
+				LOGGER.info("Starting " + WIDTH + "x" + HEIGHT
+						+ " game setting screen at " + FPS + " fps.");
+				returnCode = frame.setScreen(currentScreen);
+				LOGGER.info("Closing game setting screen.");
+        		break;
+
+			case 7:
+				//Credit Screen
+				currentScreen = new CreditScreen(width, height, FPS);
+				LOGGER.info("Starting " + WIDTH + "x" + HEIGHT
+						+ " credit screen at " + FPS + " fps.");
+				returnCode = frame.setScreen(currentScreen);
+				LOGGER.info("Closing credit screen.");
+				break;
+			case 8:
+				// TwoPlayerScreen
+				frame.setSize(WIDTH*2, HEIGHT);
+				frame.moveToMiddle();
+
+				currentScreen = new TwoPlayerScreen(gameState, gameSetting, width, height, FPS, wallet);
+				LOGGER.info("Two player starting " + WIDTH + "x" + HEIGHT
+						+ " game screen at " + FPS + " fps.");
+				frame.setScreen(currentScreen);
+				LOGGER.info("Closing game screen.");
+
+				frame.setSize(WIDTH, HEIGHT);
+				frame.moveToMiddle();
+
+				gameState = ((TwoPlayerScreen) currentScreen).getWinnerGameState();
+				int winnerNumber = ((TwoPlayerScreen) currentScreen).getWinnerNumber();
 
 				LOGGER.info("Starting " + WIDTH + "x" + HEIGHT
 						+ " score screen at " + FPS + " fps, with a score of "
@@ -160,26 +216,20 @@ public final class Core {
 						+ gameState.getLivesRemaining() + " lives remaining, "
 						+ gameState.getBulletsShot() + " bullets shot and "
 						+ gameState.getShipsDestroyed() + " ships destroyed.");
-				currentScreen = new ScoreScreen(width, height, FPS, gameState);
+				DrawManager.getInstance().setFrame(frame);
+				currentScreen = new ScoreScreen(GameSettingScreen.getName(winnerNumber), width, height, FPS, gameState, wallet, achievementManager, true);
 				returnCode = frame.setScreen(currentScreen);
 				LOGGER.info("Closing score screen.");
-				break;
-			case 3:
-				// High scores.
-				currentScreen = new HighScoreScreen(width, height, FPS);
-				LOGGER.info("Starting " + WIDTH + "x" + HEIGHT
-						+ " high score screen at " + FPS + " fps.");
-				returnCode = frame.setScreen(currentScreen);
-				LOGGER.info("Closing high score screen.");
 				break;
 			default:
 				break;
 			}
 
 		} while (returnCode != 0);
-
 		fileHandler.flush();
 		fileHandler.close();
+		soundManager.closeAllSounds();
+
 		System.exit(0);
 	}
 
@@ -249,5 +299,16 @@ public final class Core {
 	public static Cooldown getVariableCooldown(final int milliseconds,
 			final int variance) {
 		return new Cooldown(milliseconds, variance);
+	}
+
+	/**
+	 * @param level set LevelSetting from GameSettingScreen
+	 */
+	public static void setLevelSetting(final int level) {
+		DifficultySetting = level;
+	}
+
+	public static int getLevelSetting(){
+		return DifficultySetting;
 	}
 }
