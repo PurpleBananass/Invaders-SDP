@@ -133,6 +133,8 @@ public class GameScreen extends Screen implements Callable<GameState> {
 
 	private GameState gameState;
 
+	private int hitBullets;
+
     /**
 	 * Constructor, establishes the properties of the screen.
 	 * 
@@ -171,6 +173,8 @@ public class GameScreen extends Screen implements Callable<GameState> {
 		this.maxCombo = gameState.getMaxCombo();
 		this.lapTime = gameState.getPrevTime();
 		this.tempScore = gameState.getPrevScore();
+
+		this.hitBullets = gameState.getHitBullets();
 
 		try {
 			this.highScores = Core.getFileManager().loadHighScores();
@@ -344,9 +348,15 @@ public class GameScreen extends Screen implements Callable<GameState> {
 								this.bulletsShot += this.itemManager.getShotNum();
 						}
 						break;
-					default:
+					case 0:
 						if (player1Attacking) {
 							if (this.ship.shoot(this.bullets, this.itemManager.getShotNum(), -1.0f)) // Player 1 attack
+								this.bulletsShot += this.itemManager.getShotNum();
+						}
+						break;
+					default: //playerNumber = -1
+						if (player1Attacking) {
+							if (this.ship.shoot(this.bullets, this.itemManager.getShotNum(), 0.0f)) // Player 1 attack
 								this.bulletsShot += this.itemManager.getShotNum();
 						}
 						break;
@@ -388,10 +398,16 @@ public class GameScreen extends Screen implements Callable<GameState> {
 						- this.ship.getSpeed() < 1;
 
 				if (moveRight && !isRightBorder) {
-					this.ship.moveRight(balance);
+					if (playerNumber == -1)
+						this.ship.moveRight();
+					else
+						this.ship.moveRight(balance);
 				}
 				if (moveLeft && !isLeftBorder) {
-					this.ship.moveLeft(balance);
+					if (playerNumber == -1)
+						this.ship.moveLeft();
+					else
+						this.ship.moveLeft(balance);
 				}
 				for(int i = 0; i < web.size(); i++) {
 					//escape Spider Web
@@ -805,6 +821,7 @@ public class GameScreen extends Screen implements Callable<GameState> {
 						this.score += Score.comboScore(this.enemyShipFormation.getPoint(), this.combo);
 						this.shipsDestroyed += this.enemyShipFormation.getDistroyedship();
 						this.combo++;
+						this.hitBullets++;
 						if (this.combo > this.maxCombo) this.maxCombo = this.combo;
 						timer.cancel();
 						isExecuted = false;
@@ -822,6 +839,7 @@ public class GameScreen extends Screen implements Callable<GameState> {
 					this.score += Score.comboScore(this.enemyShipSpecial.getPointValue(), this.combo);
 					this.shipsDestroyed++;
 					this.combo++;
+					this.hitBullets++;
 					if (this.combo > this.maxCombo) this.maxCombo = this.combo;
 					this.enemyShipSpecial.destroy(balance);
 					this.enemyShipSpecialExplosionCooldown.reset();
@@ -840,6 +858,7 @@ public class GameScreen extends Screen implements Callable<GameState> {
 				while (itemBoxIterator.hasNext()) {
 					ItemBox itemBox = itemBoxIterator.next();
 					if (checkCollision(bullet, itemBox) && !itemBox.isDroppedRightNow()) {
+						this.hitBullets++;
 						itemBoxIterator.remove();
 						recyclable.add(bullet);
 						Entry<Integer, Integer> itemResult = this.itemManager.useItem();
@@ -912,7 +931,7 @@ public class GameScreen extends Screen implements Callable<GameState> {
 	 */
 	public final GameState getGameState() {
 		return new GameState(this.level, this.score, this.shipType, this.lives,
-				this.bulletsShot, this.shipsDestroyed, this.elapsedTime, this.alertMessage, 0, this.maxCombo, this.lapTime, this.tempScore);
+				this.bulletsShot, this.shipsDestroyed, this.elapsedTime, this.alertMessage, 0, this.maxCombo, this.lapTime, this.tempScore, this.hitBullets);
 	}
 
 
